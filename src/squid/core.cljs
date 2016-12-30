@@ -24,7 +24,7 @@
     app))
 
 (defn h [tag attrs & children]
-  (js/virtualDom.h tag (clj->js attrs) (clj->js children)))
+  (js/virtualDom.h tag #js{:attributes (clj->js attrs)} (clj->js children)))
 
 ;; Only defining the elements used by TodoMVC
 (def header (partial h "header"))
