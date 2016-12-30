@@ -1,16 +1,19 @@
 (ns squid-mvc.core
-  (:require ))
+  (:require [datascript.core :as d]
+            [squid.core :as s]
+            [squid-mvc.view :as v]
+            [squid-mvc.seed :as seed]))
 
 (enable-console-print!)
 
-(println "This text is printed from src/squid-mvc/core.cljs. Go ahead and edit it and see reloading in action.")
+(def schema
+  {:db/ident {:db/unique :db.unique/identity}})
 
-;; define your app data so that it doesn't get over-written on reload
-
-(defonce app-state (atom {:text "Hello world!"}))
+(defonce app
+  (let [conn      (d/create-conn schema)
+        container (js/document.getElementById "app")]
+    (d/transact! conn seed/data)
+    (s/mount container conn #'v/render)))
 
 (defn on-js-reload []
-  ;; optionally touch your app-state to force rerendering depending on
-  ;; your application
-  ;; (swap! app-state update-in [:__figwheel_counter] inc)
-)
+  (s/render app))

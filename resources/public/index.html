@@ -6,11 +6,10 @@
 		<title>Template • TodoMVC</title>
 		<link rel="stylesheet" href="node_modules/todomvc-common/base.css">
 		<link rel="stylesheet" href="node_modules/todomvc-app-css/index.css">
-		<!-- CSS overrides - remove if you don't need it -->
-		<link rel="stylesheet" href="css/app.css">
 	</head>
 	<body>
-		<section class="todoapp">
+		<section class="todoapp" id="app">
+
 			<header class="header">
 				<h1>todos</h1>
 				<input class="new-todo" placeholder="What needs to be done?" autofocus>
@@ -59,6 +58,7 @@
 				<!-- Hidden if no completed items are left ↓ -->
 				<button class="clear-completed">Clear completed</button>
 			</footer>
+
 		</section>
 		<footer class="info">
 			<p>Double-click to edit a todo</p>
