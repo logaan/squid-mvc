@@ -1,4 +1,5 @@
 (ns squid-mvc.view
+  (:require-macros [squid.core :as s])
   (:require [squid.core :as s]
             [squid-mvc.model :as m]))
 
@@ -58,19 +59,6 @@
                     (s/strong {} incomplete-count) " "
                     (pluralise "item" incomplete-count)
                     " left")
-
-            ;; Commented out until routing is implemented
-            #_(s/ul {:class "filters"}
-                  (s/li {}
-                        (s/a {:class "selected"
-                              :href  "#/"}
-                             "All"))
-                  (s/li {}
-                        (s/a {:href "#/active"}
-                             "Active"))
-                  (s/li {}
-                        (s/a {:href "#/completed"}
-                             "Completed")))
 
             (if show-clear?
               (s/button {:class "clear-completed"

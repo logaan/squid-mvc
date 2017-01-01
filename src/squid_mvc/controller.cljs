@@ -8,29 +8,25 @@
   Todos
   (edit-new [conn]
     (fn [event]
-      (d/transact! conn
-                   [{:db/ident :app
-                     :new-todo event.target.value}])))
+      (d/transact! conn [{:db/ident :app
+                          :new-todo event.target.value}])))
 
   (create [conn]
     (fn [event]
       (.preventDefault event)
       (let [{:keys [new-todo]} (m/app-data @conn)]
-        (d/transact! conn
-                     [{:type        :todo
-                       :description new-todo
-                       :complete    false}
-                      {:db/ident :app
-                       :new-todo ""}]))))
+        (d/transact! conn [{:type        :todo
+                            :description new-todo
+                            :complete    false}
+                           {:db/ident :app
+                            :new-todo ""}]))))
 
   (edit
     ([conn id attr]
-     (fn [event]
-       (d/transact! conn [[:db/add id attr event.target.value]])))
+     (fn [event] (d/transact! conn [[:db/add id attr event.target.value]])))
 
     ([conn id attr value]
-     (fn [_]
-       (d/transact! conn [[:db/add id attr value]]))))
+     (fn [_] (d/transact! conn [[:db/add id attr value]]))))
 
   (toggle-complete [conn id]
     (fn [_]
@@ -38,8 +34,7 @@
         (d/transact! conn [[:db/add id :complete (not complete)]]))))
 
   (destroy [conn id]
-    (fn [_]
-      (d/transact! conn [[:db.fn/retractEntity id]])))
+    (fn [_] (d/transact! conn [[:db.fn/retractEntity id]])))
 
   (clear-completed [conn]
     (fn [_]

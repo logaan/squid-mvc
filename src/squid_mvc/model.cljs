@@ -15,11 +15,7 @@
         db complete?)))
 
 (defn- count-by-complete [db complete?]
-  (let [[raw-count] (d/q '[:find [(count ?e)]
-                           :in $ ?complete?
-                           :where [?e :complete ?complete?]]
-                         db complete?)]
-    (or raw-count 0)))
+  (count (find-by-complete db complete?)))
 
 (defn any-complete? [db]
   (pos? (count-by-complete db true)))
