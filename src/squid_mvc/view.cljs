@@ -26,12 +26,13 @@
                               :oninput     (edit-new conn)
                               :value       new-todo}))))
 
-(s/defn-memo main [conn todos]
+(s/defn-memo main [conn todos all-complete?]
   (println "main")
   (s/section {:class "main"}
 
              (s/input {:class    "toggle-all"
                        :type     "checkbox"
+                       :checked  all-complete?
                        :onchange (toggle-all conn)})
              (s/label {:for "toggle-all"}
                       "Mark all as complete")
@@ -42,10 +43,10 @@
                                              (if editing "editing"))
                             :ondblclick (edit conn id :editing true)}
                            (s/div {:class "view"}
-                                  (s/input {:class                 "toggle"
-                                            :type                  "checkbox"
-                                            (if complete :checked) true
-                                            :onclick               (toggle-complete conn id)})
+                                  (s/input {:class   "toggle"
+                                            :type    "checkbox"
+                                            :checked complete
+                                            :onclick (toggle-complete conn id)})
                                   (s/label {} description)
                                   (s/button {:class   "destroy"
                                              :onclick (destroy conn id)}))
@@ -76,7 +77,7 @@
            (header conn new-todo)
            (if (seq todos)
              (s/div {}
-                    (main conn todos)
+                    (main conn todos (m/all-complete? db))
                     (footer conn
                             (m/incomplete-count db)
                             (m/any-complete? db)))))))

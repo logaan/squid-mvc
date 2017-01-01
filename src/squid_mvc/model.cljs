@@ -26,5 +26,8 @@
 (defn any-incomplete? [db]
   (pos? (incomplete-count db)))
 
+(defn all-complete? [db]
+  (zero? (incomplete-count db)))
+
 (defn app-data [db]
   (d/entity db [:db/ident :app]))
