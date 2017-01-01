@@ -4,19 +4,19 @@
             [squid-mvc.model :as m]
             [squid-mvc.view :refer [Todos]]))
 
-(extend-type s/App
+(extend-type Atom
   Todos
-  (edit-new [{:keys [state]}]
+  (edit-new [conn]
     (fn [event]
-      (d/transact! state
+      (d/transact! conn
                    [{:db/ident :app
                      :new-todo event.target.value}])))
 
-  (create [{:keys [state]}]
+  (create [conn]
     (fn [event]
       (.preventDefault event)
-      (let [{:keys [new-todo]} (m/app-data @state)]
-        (d/transact! state
+      (let [{:keys [new-todo]} (m/app-data @conn)]
+        (d/transact! conn
                      [{:type        :todo
                        :description new-todo
                        :complete    false}
@@ -24,25 +24,25 @@
                        :new-todo ""}]))))
 
   (edit
-    ([{:keys [state]} id attr]
+    ([conn id attr]
      (fn [event]
-       (d/transact! state [[:db/add id attr event.target.value]])))
+       (d/transact! conn [[:db/add id attr event.target.value]])))
 
-    ([{:keys [state]} id attr value]
+    ([conn id attr value]
      (fn [_]
-       (d/transact! state [[:db/add id attr value]]))))
+       (d/transact! conn [[:db/add id attr value]]))))
 
-  (toggle-complete [{:keys [state]} id]
+  (toggle-complete [conn id]
     (fn [_]
-      (let [{:keys [complete]} (d/entity @state id)]
-        (d/transact! state [[:db/add id :complete (not complete)]]))))
+      (let [{:keys [complete]} (d/entity @conn id)]
+        (d/transact! conn [[:db/add id :complete (not complete)]]))))
 
-  (destroy [{:keys [state]} id]
+  (destroy [conn id]
     (fn [_]
-      (d/transact! state [[:db.fn/retractEntity id]])))
+      (d/transact! conn [[:db.fn/retractEntity id]])))
 
-  (clear-completed [{:keys [state]}]
+  (clear-completed [conn]
     (fn [_]
-      (let [ids         (map :db/id (m/find-by-complete @state true))
+      (let [ids         (map :db/id (m/find-by-complete @conn true))
             retractions (for [id ids] [:db.fn/retractEntity id])]
-        (d/transact! state retractions)))))
+        (d/transact! conn retractions)))))
