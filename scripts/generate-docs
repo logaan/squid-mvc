@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+
+./scripts/minified-build
+rm -rf docs/*
+cp -R resources/public/* docs/
