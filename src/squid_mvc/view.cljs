@@ -17,7 +17,7 @@
 ;; reset the new-todo but deletions/edits/completions should have no impact.
 (defn header [app new-todo]
   (s/header {:class "header"}
-            (s/h1 "todos")
+            (s/h1 {} "todos")
             (s/form {:onsubmit (create app)}
                     (s/input {:class       "new-todo"
                               :placeholder "What needs to be done?"
