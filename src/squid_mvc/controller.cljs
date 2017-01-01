@@ -2,7 +2,8 @@
   (:require [squid.core :as s]
             [datascript.core :as d]
             [squid-mvc.model :as m]
-            [squid-mvc.view :refer [Todos]]))
+            [squid-mvc.view :refer [Todos]]
+            [clojure.string :as str]))
 
 (extend-type Atom
   Todos
@@ -14,12 +15,15 @@
   (create [conn]
     (fn [event]
       (.preventDefault event)
-      (let [{:keys [new-todo]} (m/app-data @conn)]
-        (d/transact! conn [{:type        :todo
-                            :description new-todo
-                            :complete    false}
-                           {:db/ident :app
-                            :new-todo ""}]))))
+      (let [new-todo (str/trim (:new-todo (m/app-data @conn)))]
+        (if (empty? new-todo)
+          (d/transact! conn [{:db/ident :app
+                              :new-todo ""}])
+          (d/transact! conn [{:type        :todo
+                             :description new-todo
+                             :complete    false}
+                            {:db/ident :app
+                             :new-todo ""}])))))
 
   (edit
     ([conn id attr]
