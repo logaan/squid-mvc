@@ -6,7 +6,8 @@
   (edit-new [app])
   (create [app])
   (edit [app id attr] [app id attr value])
-  (toggle-complete [app id]))
+  (toggle-complete [app id])
+  (destroy [app id]))
 
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
@@ -44,7 +45,8 @@
                                             (if complete :checked) true
                                             :onclick               (toggle-complete app id)})
                                   (s/label {} description)
-                                  (s/button {:class "destroy"}))
+                                  (s/button {:class "destroy"
+                                             :onclick (destroy app id)}))
                            (s/input {:class   "edit"
                                      :value   description
                                      :onblur  (edit app id :editing false)

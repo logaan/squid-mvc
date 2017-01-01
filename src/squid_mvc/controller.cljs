@@ -35,4 +35,8 @@
   (toggle-complete [{:keys [state]} id]
     (fn [_]
       (let [{:keys [complete]} (d/entity @state id)]
-        (d/transact! state [[:db/add id :complete (not complete)]])))))
+        (d/transact! state [[:db/add id :complete (not complete)]]))))
+
+  (destroy [{:keys [state]} id]
+    (fn [_]
+      (d/transact! state [[:db.fn/retractEntity id]]))))
