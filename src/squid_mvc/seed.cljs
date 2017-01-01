@@ -14,4 +14,4 @@
     :complete    true}
 
    {:db/ident :app
-    :new-task ""}])
+    :new-todo ""}])

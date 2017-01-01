@@ -2,7 +2,8 @@
   (:require [datascript.core :as d]
             [squid.core :as s]
             [squid-mvc.view :as v]
-            [squid-mvc.seed :as seed]))
+            [squid-mvc.seed :as seed]
+            squid-mvc.controller))
 
 (enable-console-print!)
 

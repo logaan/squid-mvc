@@ -23,8 +23,15 @@
     (add-watch state ::re-render (fn [_ _ _ _] (render app)))
     app))
 
+(def pass-through-attrs
+  [:value :onsubmit :oninput])
+
 (defn h [tag attrs & children]
-  (js/virtualDom.h tag #js{:attributes (clj->js attrs)} (clj->js children)))
+  (let [options (merge {:attributes attrs}
+                       (select-keys attrs pass-through-attrs))]
+    (js/virtualDom.h tag
+                    (clj->js options)
+                    (clj->js children))))
 
 ;; Only defining the elements used by TodoMVC
 (def header (partial h "header"))
@@ -40,3 +47,8 @@
 (def span (partial h "span"))
 (def strong (partial h "strong"))
 (def a (partial h "a"))
+
+(def form (partial h "form"))
+
+(defmacro defn-memo [name & body]
+  `(def ~name (memoize (fn ~body))))
