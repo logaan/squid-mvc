@@ -14,6 +14,7 @@
   (str word (if (not= 1 number) "s")))
 
 (s/defn-memo header [conn new-todo]
+  (println "header")
   (s/header {:class "header"}
             (s/h1 {} "todos")
             (s/form {:onsubmit (create conn)}
@@ -24,6 +25,7 @@
                               :value       new-todo}))))
 
 (s/defn-memo main [conn todos]
+  (println "main")
   (s/section {:class "main"}
 
              (s/input {:class "toggle-all"
@@ -50,6 +52,7 @@
                                      :oninput (edit conn id :description)}))))))
 
 (s/defn-memo footer [conn incomplete-count show-clear?]
+  (println "footer")
   (s/footer {:class "footer"}
             (s/span {:class "todo-count"}
                     (s/strong {} incomplete-count) " "
@@ -75,6 +78,7 @@
                         "Clear completed"))))
 
 (defn render [conn]
+  (println "----------------------------------- render -------------------------------------")
   (let [db                        @conn
         todos                     (m/todos db)
         {:keys [new-todo] :as ad} (m/app-data db)]
