@@ -1,12 +1,13 @@
 # Squid • [TodoMVC](http://todomvc.com)
 
 This is an implementation of TodoMVC using ClojureScript and the Squid
-framework. Squid follows a MVC structure. Models and views are purely functional
-code. Views are memoised and will only re-render when called with data that has
-not been rendered in the past. Only the controller deals with javascript events,
-state mutations, ajax calls, etc. Your application's state is stored in a in
-memory database. User interactions trigger functions that write directly to the
-database.
+framework.
+
+Squid follows a MVC structure. Models and views are purely functional code.
+Views are memoised and will only re-render when called with new data.
+Controllers deal with javascript events, state mutations, ajax calls, etc.
+Application state is stored in an in memory database. User interactions trigger
+functions that write directly to the database.
 
 Check out the [live demo](https://logaan.github.io/squid-mvc/).
 
