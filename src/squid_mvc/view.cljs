@@ -46,7 +46,7 @@
                                             (if complete :checked) true
                                             :onclick               (toggle-complete app id)})
                                   (s/label {} description)
-                                  (s/button {:class "destroy"
+                                  (s/button {:class   "destroy"
                                              :onclick (destroy app id)}))
                            (s/input {:class   "edit"
                                      :value   description
@@ -62,7 +62,8 @@
                     (pluralise "item" incomplete-count)
                     " left")
 
-            (s/ul {:class "filters"}
+            ;; Commented out until routing is implemented
+            #_(s/ul {:class "filters"}
                   (s/li {}
                         (s/a {:class "selected"
                               :href  "#/"}
