@@ -49,6 +49,3 @@
 (def a (partial h "a"))
 
 (def form (partial h "form"))
-
-(defmacro defn-memo [name & body]
-  `(def ~name (memoize (fn ~body))))

@@ -13,9 +13,7 @@
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
 
-;; Only re-render if the text of the new-todo changes. Creations of todos will
-;; reset the new-todo but deletions/edits/completions should have no impact.
-(defn header [conn new-todo]
+(s/defn-memo header [conn new-todo]
   (s/header {:class "header"}
             (s/h1 {} "todos")
             (s/form {:onsubmit (create conn)}
@@ -25,9 +23,7 @@
                               :oninput     (edit-new conn)
                               :value       new-todo}))))
 
-;; Should not re-render if we write in the new-todo box. But will re-render for
-;; any changes to todos as we're presenting all of their information.
-(defn main [conn todos]
+(s/defn-memo main [conn todos]
   (s/section {:class "main"}
 
              (s/input {:class "toggle-all"
@@ -53,9 +49,7 @@
                                      :onblur  (edit conn id :editing false)
                                      :oninput (edit conn id :description)}))))))
 
-;; Footer should not re-render if we edit the description of
-;; a todo. Only if we create/delete/complete a todo.
-(defn footer [conn incomplete-count show-clear?]
+(s/defn-memo footer [conn incomplete-count show-clear?]
   (s/footer {:class "footer"}
             (s/span {:class "todo-count"}
                     (s/strong {} incomplete-count) " "
