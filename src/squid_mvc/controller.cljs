@@ -39,4 +39,10 @@
 
   (destroy [{:keys [state]} id]
     (fn [_]
-      (d/transact! state [[:db.fn/retractEntity id]]))))
+      (d/transact! state [[:db.fn/retractEntity id]])))
+
+  (clear-completed [{:keys [state]}]
+    (fn [_]
+      (let [ids         (map :db/id (m/find-by-complete @state true))
+            retractions (for [id ids] [:db.fn/retractEntity id])]
+        (d/transact! state retractions)))))

@@ -7,6 +7,13 @@
               :where [?e :type :todo]]
             db)))
 
+(defn find-by-complete [db complete?]
+  (map first
+       (d/q '[:find (pull ?e [*])
+          :in $ ?complete?
+          :where [?e :complete ?complete?]]
+        db complete?)))
+
 (defn- count-by-complete [db complete?]
   (let [[raw-count] (d/q '[:find [(count ?e)]
                            :in $ ?complete?

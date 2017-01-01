@@ -7,7 +7,8 @@
   (create [app])
   (edit [app id attr] [app id attr value])
   (toggle-complete [app id])
-  (destroy [app id]))
+  (destroy [app id])
+  (clear-completed [app]))
 
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
@@ -54,7 +55,7 @@
 
 ;; Footer should not re-render if we edit the description of
 ;; a todo. Only if we create/delete/complete a todo.
-(defn footer [incomplete-count show-clear?]
+(defn footer [app incomplete-count show-clear?]
   (s/footer {:class "footer"}
             (s/span {:class "todo-count"}
                     (s/strong {} incomplete-count) " "
@@ -74,7 +75,8 @@
                              "Completed")))
 
             (if show-clear?
-              (s/button {:class "clear-completed"}
+              (s/button {:class "clear-completed"
+                         :onclick (clear-completed app)}
                         "Clear completed"))))
 
 (defn render [app db]
@@ -85,5 +87,6 @@
            (if (seq todos)
              (s/div {}
                     (main app todos)
-                    (footer (m/incomplete-count db)
+                    (footer app
+                            (m/incomplete-count db)
                             (m/any-complete? db)))))))
