@@ -21,4 +21,18 @@
                        :description new-todo
                        :complete    false}
                       {:db/ident :app
-                       :new-todo ""}])))))
+                       :new-todo ""}]))))
+
+  (edit
+    ([{:keys [state]} id attr]
+     (fn [event]
+       (d/transact! state [[:db/add id attr event.target.value]])))
+
+    ([{:keys [state]} id attr value]
+     (fn [_]
+       (d/transact! state [[:db/add id attr value]]))))
+
+  (toggle-complete [{:keys [state]} id]
+    (fn [_]
+      (let [{:keys [complete]} (d/entity @state id)]
+        (d/transact! state [[:db/add id :complete (not complete)]])))))

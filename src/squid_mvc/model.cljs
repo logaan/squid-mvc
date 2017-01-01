@@ -8,11 +8,11 @@
             db)))
 
 (defn- count-by-complete [db complete?]
-  (first
-   (d/q '[:find [(count ?e)]
-          :in $ ?complete?
-          :where [?e :complete ?complete?]]
-        db complete?)))
+  (let [[raw-count] (d/q '[:find [(count ?e)]
+                           :in $ ?complete?
+                           :where [?e :complete ?complete?]]
+                         db complete?)]
+    (or raw-count 0)))
 
 (defn any-complete? [db]
   (pos? (count-by-complete db true)))
@@ -21,4 +21,4 @@
   (count-by-complete db false))
 
 (defn app-data [db]
-  (d/entity db '[:db/ident :app]))
+  (d/entity db [:db/ident :app]))

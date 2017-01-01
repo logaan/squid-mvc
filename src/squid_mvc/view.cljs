@@ -4,7 +4,9 @@
 
 (defprotocol Todos
   (edit-new [app])
-  (create [app]))
+  (create [app])
+  (edit [app id attr] [app id attr value])
+  (toggle-complete [app id]))
 
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
@@ -23,7 +25,7 @@
 
 ;; Should not re-render if we write in the new-todo box. But will re-render for
 ;; any changes to todos as we're presenting all of their information.
-(defn main [todos]
+(defn main [app todos]
   (s/section {:class "main"}
 
              (s/input {:class "toggle-all"
@@ -32,16 +34,21 @@
                       "Mark all as complete")
 
              (s/ul {:class "todo-list"}
-                   (for [{:keys [db/id complete description]} todos]
-                     (s/li {:class (if complete "completed")}
+                   (for [{:keys [db/id complete description editing]} todos]
+                     (s/li {:class (str (if complete "completed") " "
+                                        (if editing "editing"))
+                            :ondblclick (edit app id :editing true)}
                            (s/div {:class "view"}
                                   (s/input {:class   "toggle"
                                             :type    "checkbox"
-                                            (if complete :checked) true})
+                                            (if complete :checked) true
+                                            :onclick (toggle-complete app id)})
                                   (s/label {} description)
                                   (s/button {:class "destroy"}))
                            (s/input {:class "edit"
-                                     :value description}))))))
+                                     :value description
+                                     :onblur (edit app id :editing false)
+                                     :oninput (edit app id :description)}))))))
 
 ;; Footer should not re-render if we edit the description of
 ;; a todo. Only if we create/delete/complete a todo.
@@ -75,6 +82,6 @@
            (header app new-todo)
            (if (seq todos)
              (s/div {}
-                    (main todos)
+                    (main app todos)
                     (footer (m/incomplete-count db)
                             (m/any-complete? db)))))))
