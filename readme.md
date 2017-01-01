@@ -9,7 +9,8 @@ Controllers deal with javascript events, state mutations, ajax calls, etc.
 Application state is stored in an in memory database. User interactions trigger
 functions that write directly to the database.
 
-Check out the [live demo](https://logaan.github.io/squid-mvc/).
+Check out the [live demo](https://logaan.github.io/squid-mvc/). Have a look at
+the console to see how memoisation dramatically reduces rendering.
 
 ## Dependencies
 
