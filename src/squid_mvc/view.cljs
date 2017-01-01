@@ -35,19 +35,19 @@
 
              (s/ul {:class "todo-list"}
                    (for [{:keys [db/id complete description editing]} todos]
-                     (s/li {:class (str (if complete "completed") " "
-                                        (if editing "editing"))
+                     (s/li {:class      (str (if complete "completed") " "
+                                             (if editing "editing"))
                             :ondblclick (edit app id :editing true)}
                            (s/div {:class "view"}
-                                  (s/input {:class   "toggle"
-                                            :type    "checkbox"
+                                  (s/input {:class                 "toggle"
+                                            :type                  "checkbox"
                                             (if complete :checked) true
-                                            :onclick (toggle-complete app id)})
+                                            :onclick               (toggle-complete app id)})
                                   (s/label {} description)
                                   (s/button {:class "destroy"}))
-                           (s/input {:class "edit"
-                                     :value description
-                                     :onblur (edit app id :editing false)
+                           (s/input {:class   "edit"
+                                     :value   description
+                                     :onblur  (edit app id :editing false)
                                      :oninput (edit app id :description)}))))))
 
 ;; Footer should not re-render if we edit the description of
