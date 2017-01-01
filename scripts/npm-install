@@ -2,3 +2,4 @@
 
 cd resources/public
 npm install
+mv node_modules vendor
