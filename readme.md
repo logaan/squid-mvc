@@ -6,7 +6,7 @@ code. Only the controller deals with javascript events, state mutations, ajax
 calls, etc. Your application's state is stored in a in memory database. User
 interactions trigger functions that write directly to the database.
 
-[Live demo](https://logaan.github.io/squid-mvc/).
+Check out the [live demo](https://logaan.github.io/squid-mvc/).
 
 ## Dependencies
 
