@@ -39,15 +39,15 @@
 
              (s/ul {:class "todo-list"}
                    (for [{:keys [db/id complete description editing]} todos]
-                     (s/li {:class      (str (if complete "completed") " "
-                                             (if editing "editing"))
-                            :ondblclick (edit conn id :editing true)}
+                     (s/li {:class (str (if complete "completed") " "
+                                        (if editing "editing"))}
                            (s/div {:class "view"}
                                   (s/input {:class   "toggle"
                                             :type    "checkbox"
                                             :checked complete
                                             :onclick (toggle-complete conn id)})
-                                  (s/label {} description)
+                                  (s/label {:ondblclick (edit conn id :editing true)}
+                                           description)
                                   (s/button {:class   "destroy"
                                              :onclick (destroy conn id)}))
                            (s/input {:class   "edit"
