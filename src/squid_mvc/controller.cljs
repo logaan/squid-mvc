@@ -40,4 +40,11 @@
     (fn [_]
       (let [ids         (map :db/id (m/find-by-complete @conn true))
             retractions (for [id ids] [:db.fn/retractEntity id])]
-        (d/transact! conn retractions)))))
+        (d/transact! conn retractions))))
+
+  (toggle-all [conn]
+    (fn [_]
+      (let [new-compete (m/any-incomplete? @conn)
+            ids         (map :db/id (m/todos @conn))
+            adds        (for [id ids] [:db/add id :complete new-compete])]
+        (d/transact! conn adds)))))

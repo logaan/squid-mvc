@@ -9,7 +9,8 @@
   (edit [conn id attr] [conn id attr value])
   (toggle-complete [conn id])
   (destroy [conn id])
-  (clear-completed [conn]))
+  (clear-completed [conn])
+  (toggle-all [conn]))
 
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
@@ -29,8 +30,9 @@
   (println "main")
   (s/section {:class "main"}
 
-             (s/input {:class "toggle-all"
-                       :type  "checkbox"})
+             (s/input {:class    "toggle-all"
+                       :type     "checkbox"
+                       :onchange (toggle-all conn)})
              (s/label {:for "toggle-all"}
                       "Mark all as complete")
 
