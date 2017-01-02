@@ -20,15 +20,23 @@
           (d/transact! conn [{:db/ident :app
                               :new-todo ""}])
           (d/transact! conn [{:type        :todo
-                             :description new-todo
-                             :complete    false}
-                            {:db/ident :app
-                             :new-todo ""}])))))
+                              :description new-todo
+                              :complete    false}
+                             {:db/ident :app
+                              :new-todo ""}])))))
 
   (edit [conn id]
     (fn [event]
       (d/transact! conn [[:db/add id :editing true]])
       (.focus js/event.target.parentElement.nextElementSibling)))
+
+  (stop-edit [conn id]
+    (fn [event]
+      (let [final-desc (-> (d/entity @conn id) :description str/trim)
+            action     (if (empty? final-desc)
+                         [:db.fn/retractEntity id]
+                         [:db/add id :editing false])]
+        (d/transact! conn [action]))))
 
   (set
     ([conn id attr]
