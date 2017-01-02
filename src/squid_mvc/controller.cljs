@@ -23,8 +23,10 @@
                      [:db/add id :editing false])]
     (d/transact! conn [action])))
 
-(defn- conclude-edit [conn id]
-  (d/transact! conn [[:db/add id :editing false]]))
+(defn- discard-edit [conn id]
+  (let [{:keys [original-description]} (d/entity @conn id)]
+    (d/transact! conn [[:db/add id :description original-description]
+                       [:db/add id :editing false]])))
 
 (extend-type Atom
   Todos
@@ -37,8 +39,10 @@
 
   (start-edit [conn id]
     (fn [event]
-      (d/transact! conn [[:db/add id :editing true]])
-      (.focus js/event.target.parentElement.nextElementSibling)))
+      (let [{:keys [description]} (d/entity @conn id)]
+        (d/transact! conn [[:db/add id :original-description description]
+                           [:db/add id :editing true]])
+        (.focus js/event.target.parentElement.nextElementSibling))))
 
   (stop-edit [conn id]
     (fn [event]
@@ -48,7 +52,7 @@
     (fn [event]
       (condp = js/event.code
         "Enter"  (commit-edit conn id)
-        "Escape" (conclude-edit conn id)
+        "Escape" (discard-edit conn id)
         (d/transact! conn [[:db/add id :description event.target.value]]))))
 
   (toggle-complete [conn id]
