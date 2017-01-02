@@ -16,6 +16,16 @@
                          {:db/ident :app
                           :new-todo ""}]))))
 
+(defn commit-edit [conn id]
+  (let [final-desc (-> (d/entity @conn id) :description str/trim)
+        action     (if (empty? final-desc)
+                     [:db.fn/retractEntity id]
+                     [:db/add id :editing false])]
+    (d/transact! conn [action])))
+
+(defn conclude-edit [conn id]
+  (d/transact! conn [[:db/add id :editing false]]))
+
 (extend-type Atom
   Todos
   (edit-new [conn]
@@ -32,18 +42,14 @@
 
   (stop-edit [conn id]
     (fn [event]
-      (let [final-desc (-> (d/entity @conn id) :description str/trim)
-            action     (if (empty? final-desc)
-                         [:db.fn/retractEntity id]
-                         [:db/add id :editing false])]
-        (d/transact! conn [action]))))
+      (commit-edit conn id)))
 
-  (update
-    ([conn id attr]
-     (fn [event] (d/transact! conn [[:db/add id attr event.target.value]])))
-
-    ([conn id attr value]
-     (fn [_] (d/transact! conn [[:db/add id attr value]]))))
+  (perform-edit [conn id]
+    (fn [event]
+      (condp = js/event.code
+        "Enter"  (commit-edit conn id)
+        "Escape" (conclude-edit conn id)
+        (d/transact! conn [[:db/add id :description event.target.value]]))))
 
   (toggle-complete [conn id]
     (fn [_]

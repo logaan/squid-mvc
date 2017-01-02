@@ -6,8 +6,8 @@
 (defprotocol Todos
   (edit-new [conn])
   (start-edit [conn id])
+  (perform-edit [conn id])
   (stop-edit [conn id])
-  (update [conn id attr] [conn id attr value])
   (toggle-complete [conn id])
   (destroy [conn id])
   (clear-completed [conn])
@@ -53,7 +53,7 @@
                            (s/input {:class   "edit"
                                      :value   description
                                      :onblur  (stop-edit conn id)
-                                     :oninput (update conn id :description)}))))))
+                                     :onkeyup (perform-edit conn id)}))))))
 
 (s/defn-memo footer [conn incomplete-count show-clear?]
   (println "footer")
