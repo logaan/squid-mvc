@@ -5,7 +5,6 @@
 
 (defprotocol Todos
   (edit-new [conn])
-  (create [conn])
   (edit [conn id])
   (stop-edit [conn id])
   (set [conn id attr] [conn id attr value])
@@ -21,12 +20,11 @@
   (println "header")
   (s/header {:class "header"}
             (s/h1 {} "todos")
-            (s/form {:onsubmit (create conn)}
-                    (s/input {:class       "new-todo"
-                              :placeholder "What needs to be done?"
-                              :autofocus   true
-                              :oninput     (edit-new conn)
-                              :value       new-todo}))))
+            (s/input {:class       "new-todo"
+                      :placeholder "What needs to be done?"
+                      :autofocus   true
+                      :onkeyup     (edit-new conn)
+                      :value       new-todo})))
 
 (s/defn-memo main [conn todos all-complete?]
   (println "main")

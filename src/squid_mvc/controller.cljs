@@ -5,25 +5,25 @@
             [squid-mvc.view :refer [Todos]]
             [clojure.string :as str]))
 
+(defn- create [conn]
+  (let [new-todo (str/trim (:new-todo (m/app-data @conn)))]
+    (if (empty? new-todo)
+      (d/transact! conn [{:db/ident :app
+                          :new-todo ""}])
+      (d/transact! conn [{:type        :todo
+                          :description new-todo
+                          :complete    false}
+                         {:db/ident :app
+                          :new-todo ""}]))))
+
 (extend-type Atom
   Todos
   (edit-new [conn]
     (fn [event]
-      (d/transact! conn [{:db/ident :app
-                          :new-todo event.target.value}])))
-
-  (create [conn]
-    (fn [event]
-      (.preventDefault event)
-      (let [new-todo (str/trim (:new-todo (m/app-data @conn)))]
-        (if (empty? new-todo)
-          (d/transact! conn [{:db/ident :app
-                              :new-todo ""}])
-          (d/transact! conn [{:type        :todo
-                              :description new-todo
-                              :complete    false}
-                             {:db/ident :app
-                              :new-todo ""}])))))
+      (if (= js/event.code "Enter")
+        (create conn)
+        (d/transact! conn [{:db/ident :app
+                            :new-todo event.target.value}]))))
 
   (edit [conn id]
     (fn [event]

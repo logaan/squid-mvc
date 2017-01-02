@@ -24,7 +24,8 @@
     app))
 
 (def pass-through-attrs
-  [:value :onsubmit :oninput :ondblclick :onblur :onclick :onchange :checked])
+  [:value :onsubmit :oninput :ondblclick :onblur :onclick :onchange :checked
+   :onkeyup])
 
 (defn h [tag attrs & children]
   (let [options (merge {:attributes attrs}
