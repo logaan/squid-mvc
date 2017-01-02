@@ -7,7 +7,7 @@
   (edit-new [conn])
   (edit [conn id])
   (stop-edit [conn id])
-  (set [conn id attr] [conn id attr value])
+  (update [conn id attr] [conn id attr value])
   (toggle-complete [conn id])
   (destroy [conn id])
   (clear-completed [conn])
@@ -53,7 +53,7 @@
                            (s/input {:class   "edit"
                                      :value   description
                                      :onblur  (stop-edit conn id)
-                                     :oninput (set conn id :description)}))))))
+                                     :oninput (update conn id :description)}))))))
 
 (s/defn-memo footer [conn incomplete-count show-clear?]
   (println "footer")

@@ -2,10 +2,11 @@
   (:require [datascript.core :as d]))
 
 (defn todos [db]
-  (map first
-       (d/q '[:find (pull ?e [*])
-              :where [?e :type :todo]]
-            db)))
+  (sort-by :db/id
+           (map first
+                (d/q '[:find (pull ?e [*])
+                       :where [?e :type :todo]]
+                     db))))
 
 (defn find-by-complete [db complete?]
   (map first

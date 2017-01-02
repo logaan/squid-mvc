@@ -38,7 +38,7 @@
                          [:db/add id :editing false])]
         (d/transact! conn [action]))))
 
-  (set
+  (update
     ([conn id attr]
      (fn [event] (d/transact! conn [[:db/add id attr event.target.value]])))
 
