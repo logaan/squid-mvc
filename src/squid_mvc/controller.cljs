@@ -25,7 +25,7 @@
         (d/transact! conn [{:db/ident :app
                             :new-todo event.target.value}]))))
 
-  (edit [conn id]
+  (start-edit [conn id]
     (fn [event]
       (d/transact! conn [[:db/add id :editing true]])
       (.focus js/event.target.parentElement.nextElementSibling)))

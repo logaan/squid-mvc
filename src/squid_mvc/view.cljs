@@ -5,7 +5,7 @@
 
 (defprotocol Todos
   (edit-new [conn])
-  (edit [conn id])
+  (start-edit [conn id])
   (stop-edit [conn id])
   (update [conn id attr] [conn id attr value])
   (toggle-complete [conn id])
@@ -46,7 +46,7 @@
                                             :type    "checkbox"
                                             :checked complete
                                             :onclick (toggle-complete conn id)})
-                                  (s/label {:ondblclick (edit conn id)}
+                                  (s/label {:ondblclick (start-edit conn id)}
                                            description)
                                   (s/button {:class   "destroy"
                                              :onclick (destroy conn id)}))
