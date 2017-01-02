@@ -16,14 +16,14 @@
                          {:db/ident :app
                           :new-todo ""}]))))
 
-(defn commit-edit [conn id]
+(defn- commit-edit [conn id]
   (let [final-desc (-> (d/entity @conn id) :description str/trim)
         action     (if (empty? final-desc)
                      [:db.fn/retractEntity id]
                      [:db/add id :editing false])]
     (d/transact! conn [action])))
 
-(defn conclude-edit [conn id]
+(defn- conclude-edit [conn id]
   (d/transact! conn [[:db/add id :editing false]]))
 
 (extend-type Atom
