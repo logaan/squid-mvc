@@ -6,7 +6,8 @@
 (defprotocol Todos
   (edit-new [conn])
   (create [conn])
-  (edit [conn id attr] [conn id attr value])
+  (edit [conn id])
+  (set [conn id attr] [conn id attr value])
   (toggle-complete [conn id])
   (destroy [conn id])
   (clear-completed [conn])
@@ -46,14 +47,14 @@
                                             :type    "checkbox"
                                             :checked complete
                                             :onclick (toggle-complete conn id)})
-                                  (s/label {:ondblclick (edit conn id :editing true)}
+                                  (s/label {:ondblclick (edit conn id)}
                                            description)
                                   (s/button {:class   "destroy"
                                              :onclick (destroy conn id)}))
                            (s/input {:class   "edit"
                                      :value   description
-                                     :onblur  (edit conn id :editing false)
-                                     :oninput (edit conn id :description)}))))))
+                                     :onblur  (set conn id :editing false)
+                                     :oninput (set conn id :description)}))))))
 
 (s/defn-memo footer [conn incomplete-count show-clear?]
   (println "footer")
