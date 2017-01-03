@@ -3,17 +3,25 @@
             [squid.core :as s]
             [squid-mvc.view :as v]
             [squid-mvc.seed :as seed]
-            squid-mvc.controller))
+            [squid-mvc.controller :as c]
+            [alandipert.storage-atom :refer [local-storage] :as sa]))
 
 (enable-console-print!)
 
 (def schema
-  {:db/ident {:db/unique :db.unique/identity}})
+  {:db/ident {:db/unique :db.unique/identity}
+   :editing  {:db/unique :db.unique/identity}})
+
+(defn loaded-from-storage? [load-result]
+  (not= (d/empty-db schema) @load-result))
 
 (defonce app
-  (let [conn      (d/create-conn schema)
-        container (js/document.getElementById "app")]
-    (d/transact! conn seed/data)
+  (let [conn        (d/create-conn schema)
+        container   (js/document.getElementById "app")]
+    (local-storage conn "todos-squid")
+    (if (loaded-from-storage? conn)
+      (c/discard-edit conn)
+      (d/transact! conn seed/data))
     (s/mount container conn #'v/render)))
 
 (defn on-js-reload []

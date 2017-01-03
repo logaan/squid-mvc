@@ -9,7 +9,8 @@
                  [org.clojure/core.async "0.2.391"
                   :exclusions [org.clojure/tools.reader]]
                  [cljsjs/virtual-dom "2.1.1-0"]
-                 [datascript "0.15.5"]]
+                 [datascript "0.15.5"]
+                 [alandipert/storage-atom "1.2.4"]]
 
   :plugins [[lein-figwheel "0.5.8"]
             [lein-cljsbuild "1.1.4" :exclusions [[org.clojure/clojure]]]]

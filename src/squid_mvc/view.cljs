@@ -6,8 +6,8 @@
 (defprotocol Todos
   (edit-new [conn])
   (start-edit [conn id])
-  (perform-edit [conn id])
-  (stop-edit [conn id])
+  (perform-edit [conn])
+  (stop-edit [conn])
   (toggle-complete [conn id])
   (destroy [conn id])
   (clear-completed [conn])
@@ -52,8 +52,8 @@
                                              :onclick (destroy conn id)}))
                            (s/input {:class   "edit"
                                      :value   description
-                                     :onblur  (stop-edit conn id)
-                                     :onkeyup (perform-edit conn id)}))))))
+                                     :onblur  (stop-edit conn)
+                                     :onkeyup (perform-edit conn)}))))))
 
 (s/defn-memo footer [conn incomplete-count show-clear?]
   (println "footer")

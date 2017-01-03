@@ -16,17 +16,19 @@
                          {:db/ident :app
                           :new-todo ""}]))))
 
-(defn- commit-edit [conn id]
-  (let [final-desc (-> (d/entity @conn id) :description str/trim)
+(defn- commit-edit [conn]
+  (let [id         [:editing true]
+        final-desc (-> (d/entity @conn id) :description str/trim)
         action     (if (empty? final-desc)
                      [:db.fn/retractEntity id]
                      [:db/add id :editing false])]
     (d/transact! conn [action])))
 
-(defn- discard-edit [conn id]
-  (let [{:keys [original-description]} (d/entity @conn id)]
-    (d/transact! conn [[:db/add id :description original-description]
-                       [:db/add id :editing false]])))
+(defn discard-edit [conn]
+  (let [id [:editing true]]
+    (if-let [{:keys [original-description]} (d/entity @conn id)]
+            (d/transact! conn [[:db/add id :description original-description]
+                               [:db/add id :editing false]]))))
 
 (extend-type Atom
   Todos
@@ -44,16 +46,17 @@
                            [:db/add id :editing true]])
         (.focus js/event.target.parentElement.nextElementSibling))))
 
-  (stop-edit [conn id]
+  (stop-edit [conn]
     (fn [event]
-      (commit-edit conn id)))
+      (commit-edit conn)))
 
-  (perform-edit [conn id]
+  (perform-edit [conn]
     (fn [event]
       (condp = js/event.code
-        "Enter"  (commit-edit conn id)
-        "Escape" (discard-edit conn id)
-        (d/transact! conn [[:db/add id :description event.target.value]]))))
+        "Enter"  (commit-edit conn)
+        "Escape" (discard-edit conn)
+        (d/transact! conn [[:db/add [:editing true]
+                            :description event.target.value]]))))
 
   (toggle-complete [conn id]
     (fn [_]
