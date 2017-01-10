@@ -17,12 +17,13 @@
                           :new-todo ""}]))))
 
 (defn- commit-edit [conn]
-  (let [id         [:editing true]
-        final-desc (-> (d/entity @conn id) :description str/trim)
-        action     (if (empty? final-desc)
-                     [:db.fn/retractEntity id]
-                     [:db/add id :editing false])]
-    (d/transact! conn [action])))
+  (let [id [:editing true]]
+    (if-let [entity (d/entity @conn id)]
+      (let [final-desc (-> entity :description str/trim)
+            action     (if (empty? final-desc)
+                         [:db.fn/retractEntity id]
+                         [:db/add id :editing false])]
+        (d/transact! conn [action])))))
 
 (defn discard-edit [conn]
   (let [id [:editing true]]
