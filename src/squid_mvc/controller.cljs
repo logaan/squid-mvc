@@ -22,14 +22,14 @@
       (let [final-desc (-> entity :description str/trim)
             action     (if (empty? final-desc)
                          [:db.fn/retractEntity id]
-                         [:db/add id :editing false])]
+                         [:db/retract id :editing true])]
         (d/transact! conn [action])))))
 
 (defn discard-edit [conn]
   (let [id [:editing true]]
     (if-let [{:keys [original-description]} (d/entity @conn id)]
-            (d/transact! conn [[:db/add id :description original-description]
-                               [:db/add id :editing false]]))))
+      (d/transact! conn [[:db/add id :description original-description]
+                         [:db/retract id :editing true]]))))
 
 (extend-type Atom
   Todos

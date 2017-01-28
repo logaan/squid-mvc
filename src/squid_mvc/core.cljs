@@ -4,6 +4,7 @@
             [squid-mvc.view :as v]
             [squid-mvc.seed :as seed]
             [squid-mvc.controller :as c]
+            [squid-mvc.routes :as r]
             [alandipert.storage-atom :refer [local-storage] :as sa]))
 
 (enable-console-print!)
