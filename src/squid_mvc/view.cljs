@@ -63,8 +63,13 @@
                     (pluralise "item" incomplete-count)
                     " left")
 
+            (s/ul {:class "filters"}
+                  (s/li {} (s/a {:href "#/" :class "selected"} "All"))
+                  (s/li {} (s/a {:href "#/active"} "Active"))
+                  (s/li {} (s/a {:href "#/completed"} "Completed")))
+
             (if show-clear?
-              (s/button {:class "clear-completed"
+              (s/button {:class   "clear-completed"
                          :onclick (clear-completed conn)}
                         "Clear completed"))))
 

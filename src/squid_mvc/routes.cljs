@@ -7,24 +7,29 @@
             [domkm.silk :as s]
             [bidi.bidi :refer [match-route path-for]]))
 
-;; (defn add-listener [type fn]
-;;   (.addEventListener js/window type fn))
-;;
-;; (aset js/window "onhashchange"
-;;       (fn []
-;;         (println "onhashchange")))
-;;
-;; (aset js/window "onload"
-;;       (fn []
-;;         (println "onload")))
+(comment
+  (defn add-listener [type fn]
+    (.addEventListener js/window type fn))
 
-;; (add-listener "popstate"
-;;               (fn [e]
-;;                 (println "popstate")))
+  (aset js/window "onhashchange"
+        (fn []
+          (println "onhashchange")))
 
-;;(add-listener "pageshow"
-;;              (fn [e]
-;;                (println "pageshow")))
+  (aset js/window "onload"
+        (fn []
+          (println "onload")))
+
+  (add-listener "load"
+                (fn [e]
+                  (println "onload")))
+
+  (add-listener "popstate"
+                (fn [e]
+                  (println "popstate")))
+
+  (add-listener "pageshow"
+                (fn [e]
+                  (println "pageshow"))))
 
 ;; - Manually adding a #foo to the url causes onhashchange and popstate to be
 ;;   triggered.
@@ -82,8 +87,11 @@
 ;; What I want:
 ;; - Triggers routes on:
 ;;   - Initial page load
+;;     - window.onload
 ;;   - Change of # path
+;;     - popState
 ;;   - User pressed back/forward
+;;     - popState
 ;;   - Navigation via pushState
 ;;     - Doesn't seem like this exists. Have to use your own navigate fn that
 ;;       wraps pushState.
@@ -187,6 +195,7 @@
     (update-in patterns-and-actions [:patterns] (fn [ps] ["" ps]))))
 
 (defn handle-path [routes path]
+  (js/console.log "handle-path")
   (let [{:keys [patterns actions]} (transform-routes routes)
         match                      (match-route patterns path)]
     (if-let [action (actions (:handler match))]
@@ -194,10 +203,15 @@
 
 ;; ------------------------------ Event triggering ------------------------------
 
+;; Calling handle-current as part of register-routes rather than bothering to
+;; wait for window.onload
 (defn register-routes [routes]
-  (handle-path routes window.location.pathname))
+  (let [handle-current #(handle-path routes window.location.pathname)]
+    (.addEventListener js/window "popstate" handle-current)
+    (handle-current)))
 
-(register-routes (squid-routes nil))
+(defonce registered-routes
+  (register-routes (squid-routes nil)))
 
 ;; - First event should happen as soon as the routes are registered
 ;; - Event on dispatch called
