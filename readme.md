@@ -134,3 +134,6 @@ A todo item has three possible interactions:
 - [ ] Unify html5 and hashcode routing.
 - [ ] Work out how to handle external components like charts and maps.
 - [ ] Document Squid.
+- [ ] Add test suite.
+- [ ] Setup CI.
+- [ ] Publish to Clojars.
