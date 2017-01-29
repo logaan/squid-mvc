@@ -1,7 +1,5 @@
 (ns squid-mvc.seed)
 
-;; Changes to the seed data will require a page refresh to be visible from
-;; figwheel.
 (def data
   [{:type        :todo
     :description "Taste JavaScript"
