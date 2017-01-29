@@ -42,16 +42,18 @@
   (d/transact! conn [{:db/ident :app :page page}]))
 
 (defn mvc-routes [conn]
-  (prefix ["/"]
+  [:default [""]
+   (fn []
+     (set-page conn :all))
 
-          [:all [""]
-           (fn []
-             (set-page conn :all))
+   :all ["/"]
+   (fn []
+     (set-page conn :all))
 
-           :active ["active"]
-           (fn [_]
-             (set-page conn :active))
+   :active ["/active"]
+   (fn [_]
+     (set-page conn :active))
 
-           :completed ["completed"]
-           (fn [_]
-             (set-page conn :completed))]))
+   :completed ["/completed"]
+   (fn [_]
+     (set-page conn :completed))])
