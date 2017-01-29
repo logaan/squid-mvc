@@ -84,15 +84,15 @@
 
 (defn render [conn]
   (println "----------------------------------- render -------------------------------------")
-  (let [db                        @conn
-        todos                     (m/todos db)
-        {:keys [new-todo page] :as ad} (m/app-data db)]
+  (let [db                      @conn
+        {:keys [new-todo page]} (m/app-data db)
+        todos                   (m/todos db page)]
     (s/div {}
            (header conn new-todo)
            (if (seq todos)
-             (s/div {}
-                    (main conn todos (m/all-complete? db))
-                    (footer conn
-                            page
-                            (m/incomplete-count db)
-                            (m/any-complete? db)))))))
+             (main conn todos (m/all-complete? db)))
+           (if (m/any-todos? db)
+             (footer conn
+                     page
+                     (m/incomplete-count db)
+                     (m/any-complete? db))))))

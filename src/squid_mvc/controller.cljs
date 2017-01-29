@@ -76,6 +76,6 @@
   (toggle-all [conn]
     (fn [_]
       (let [new-compete (m/any-incomplete? @conn)
-            ids         (map :db/id (m/todos @conn))
+            ids         (map :db/id (m/todos @conn :all))
             adds        (for [id ids] [:db/add id :complete new-compete])]
         (d/transact! conn adds)))))
