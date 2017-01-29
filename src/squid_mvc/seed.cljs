@@ -14,4 +14,5 @@
     :complete    true}
 
    {:db/ident :app
-    :new-todo ""}])
+    :new-todo ""
+    :page     :all}])

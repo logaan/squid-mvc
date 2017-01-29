@@ -55,7 +55,7 @@
                                      :onblur  (stop-edit conn)
                                      :onkeyup (perform-edit conn)}))))))
 
-(s/defn-memo footer [conn incomplete-count show-clear?]
+(s/defn-memo footer [conn page incomplete-count show-clear?]
   (println "footer")
   (s/footer {:class "footer"}
             (s/span {:class "todo-count"}
@@ -64,9 +64,18 @@
                     " left")
 
             (s/ul {:class "filters"}
-                  (s/li {} (s/a {:href "#/" :class "selected"} "All"))
-                  (s/li {} (s/a {:href "#/active"} "Active"))
-                  (s/li {} (s/a {:href "#/completed"} "Completed")))
+                  (s/li {}
+                        (s/a {:href "#/"
+                              :class (if (= page :all) "selected")}
+                             "All"))
+                  (s/li {}
+                        (s/a {:href "#/active"
+                              :class (if (= page :active) "selected")}
+                             "Active"))
+                  (s/li {}
+                        (s/a {:href "#/completed"
+                              :class (if (= page :completed) "selected")}
+                             "Completed")))
 
             (if show-clear?
               (s/button {:class   "clear-completed"
@@ -77,12 +86,13 @@
   (println "----------------------------------- render -------------------------------------")
   (let [db                        @conn
         todos                     (m/todos db)
-        {:keys [new-todo] :as ad} (m/app-data db)]
+        {:keys [new-todo page] :as ad} (m/app-data db)]
     (s/div {}
            (header conn new-todo)
            (if (seq todos)
              (s/div {}
                     (main conn todos (m/all-complete? db))
                     (footer conn
+                            page
                             (m/incomplete-count db)
                             (m/any-complete? db)))))))
