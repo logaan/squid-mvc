@@ -34,8 +34,19 @@
   {:hash    (fn [] (str/replace window.location.hash #"^#" ""))
    :history (fn [] window.location.pathname)})
 
+(defn handle-current [type routes]
+  (let [path ((route-type type))]
+    (js/console.log path)
+    (handle-path routes path)))
+
 (defn register-routes [type routes]
-  (let [handle-current #(let [path ((route-type type))]
-                          (handle-path routes path))]
-    (.addEventListener js/window "popstate" handle-current)
-    (handle-current)))
+  (.addEventListener js/window "popstate" #(handle-current type routes))
+  (handle-current type routes))
+
+;; Only for use with :history routing
+(defn navigate! [routes name & arguments]
+  (let [{:keys [patterns actions]} (transform-routes routes)
+        path                       (path-for patterns name arguments)]
+    (js/console.log "path: " path)
+    (.pushState js/window.history nil, nil, path)
+    (handle-current :history routes)))
