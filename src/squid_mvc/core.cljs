@@ -24,7 +24,7 @@
     (if (loaded-from-storage? conn)
       (c/discard-edit conn)
       (d/transact! conn seed/data))
-    (sr/register-routes (r/mvc-routes conn))
+    (sr/register-routes :hash (r/mvc-routes conn))
     (s/mount container conn #'v/render)))
 
 (defn on-js-reload []

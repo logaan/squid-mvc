@@ -30,8 +30,12 @@
 
 ;; --- Event triggering ---
 
-(defn register-routes [routes]
-  (let [handle-current #(let [unhashed (str/replace window.location.hash #"^#" "")]
-                          (handle-path routes unhashed))]
+(def route-type
+  {:hash    (fn [] (str/replace window.location.hash #"^#" ""))
+   :history (fn [] window.location.pathname)})
+
+(defn register-routes [type routes]
+  (let [handle-current #(let [path ((route-type type))]
+                          (handle-path routes path))]
     (.addEventListener js/window "popstate" handle-current)
     (handle-current)))

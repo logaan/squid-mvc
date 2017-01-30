@@ -8,8 +8,7 @@
 (defn- all-todos [db]
   (map first
        (d/q '[:find (pull ?e [*])
-              :where
-              [?e :type :todo]]
+              :where [?e :type :todo]]
             db)))
 
 (defn any-todos? [db]
@@ -18,9 +17,9 @@
 (defn find-by-complete [db complete?]
   (map first
        (d/q '[:find (pull ?e [*])
-          :in $ ?complete?
-          :where [?e :complete ?complete?]]
-        db complete?)))
+              :in $ ?complete?
+              :where [?e :complete ?complete?]]
+            db complete?)))
 
 (defn todos [db page]
   (sort-by :db/id
