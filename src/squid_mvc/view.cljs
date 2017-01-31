@@ -1,17 +1,8 @@
 (ns squid-mvc.view
   (:require-macros [squid.core :as s])
   (:require [squid.core :as s]
-            [squid-mvc.model :as m]))
-
-(defprotocol Todos
-  (edit-new [conn])
-  (start-edit [conn id])
-  (perform-edit [conn])
-  (stop-edit [conn])
-  (toggle-complete [conn id])
-  (destroy [conn id])
-  (clear-completed [conn])
-  (toggle-all [conn]))
+            [squid-mvc.model :as m]
+            [squid-mvc.controller :as c]))
 
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
@@ -23,7 +14,7 @@
             (s/input {:class       "new-todo"
                       :placeholder "What needs to be done?"
                       :autofocus   true
-                      :onkeyup     (edit-new conn)
+                      :onkeyup     (c/edit-new conn)
                       :value       new-todo})))
 
 (s/defn-memo main [conn todos all-complete?]
@@ -33,7 +24,7 @@
              (s/input {:class    "toggle-all"
                        :type     "checkbox"
                        :checked  all-complete?
-                       :onchange (toggle-all conn)})
+                       :onchange (c/toggle-all conn)})
              (s/label {:for "toggle-all"}
                       "Mark all as complete")
 
@@ -45,15 +36,15 @@
                                   (s/input {:class   "toggle"
                                             :type    "checkbox"
                                             :checked complete
-                                            :onclick (toggle-complete conn id)})
-                                  (s/label {:ondblclick (start-edit conn id)}
+                                            :onclick (c/toggle-complete conn id)})
+                                  (s/label {:ondblclick (c/start-edit conn id)}
                                            description)
                                   (s/button {:class   "destroy"
-                                             :onclick (destroy conn id)}))
+                                             :onclick (c/destroy conn id)}))
                            (s/input {:class   "edit"
                                      :value   description
-                                     :onblur  (stop-edit conn)
-                                     :onkeyup (perform-edit conn)}))))))
+                                     :onblur  (c/stop-edit conn)
+                                     :onkeyup (c/perform-edit conn)}))))))
 
 (s/defn-memo footer [conn page incomplete-count show-clear?]
   (println "footer")
@@ -79,7 +70,7 @@
 
             (if show-clear?
               (s/button {:class   "clear-completed"
-                         :onclick (clear-completed conn)}
+                         :onclick (c/clear-completed conn)}
                         "Clear completed"))))
 
 (defn render [conn]
