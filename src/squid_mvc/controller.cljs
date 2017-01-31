@@ -24,7 +24,7 @@
                          [:db/retract id :editing true])]
         (d/transact! conn [action])))))
 
-(defn discard-edit [conn]
+(defn- discard-edit [conn]
   (let [id [:editing true]]
     (if-let [{:keys [original-description]} (d/entity @conn id)]
       (d/transact! conn [[:db/add id :description original-description]
