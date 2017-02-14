@@ -6,7 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.229"]
-                 [org.clojure/core.async "0.2.391"
+                 #_[org.clojure/core.async "0.2.391"
                   :exclusions [org.clojure/tools.reader]]
                  [datascript "0.15.5"]
                  [alandipert/storage-atom "1.2.4"]
