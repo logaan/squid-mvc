@@ -1,6 +1,6 @@
 (ns squid-mvc.view
   (:require-macros [squid.core :as s])
-  (:require [squid.core :as s]
+  (:require [squid.core :refer [h] :as s]
             [squid-mvc.model :as m]
             [squid-mvc.controller :as c]))
 
@@ -9,81 +9,82 @@
 
 (s/defn-memo header [conn new-todo]
   (println "header")
-  (s/header {:class "header"}
-            (s/h1 {} "todos")
-            (s/input {:class       "new-todo"
-                      :placeholder "What needs to be done?"
-                      :autofocus   true
-                      :onkeyup     (c/edit-new conn)
-                      :value       new-todo})))
+  (h :header.header
+     (h :h1 "todos")
+     (h :input.new-todo
+        {:placeholder "What needs to be done?"
+         :autofocus   true
+         :onkeyup     (c/edit-new conn)
+         :value       new-todo})))
 
 (s/defn-memo main [conn todos all-complete?]
   (println "main")
-  (s/section {:class "main"}
+  (h :section.main
 
-             (s/input {:class    "toggle-all"
-                       :type     "checkbox"
-                       :checked  all-complete?
-                       :onchange (c/toggle-all conn)})
-             (s/label {:for "toggle-all"}
-                      "Mark all as complete")
+     (h :input.toggle-all
+        {:type     "checkbox"
+         :checked  all-complete?
+         :onchange (c/toggle-all conn)})
+     (h :label {:for "toggle-all"}
+        "Mark all as complete")
 
-             (s/ul {:class "todo-list"}
-                   (for [{:keys [db/id complete description editing]} todos]
-                     (s/li {:class (str (if complete "completed") " "
-                                        (if editing "editing"))}
-                           (s/div {:class "view"}
-                                  (s/input {:class   "toggle"
-                                            :type    "checkbox"
-                                            :checked complete
-                                            :onclick (c/toggle-complete conn id)})
-                                  (s/label {:ondblclick (c/start-edit conn id)}
-                                           description)
-                                  (s/button {:class   "destroy"
-                                             :onclick (c/destroy conn id)}))
-                           (s/input {:class   "edit"
-                                     :value   description
-                                     :onblur  (c/stop-edit conn)
-                                     :onkeyup (c/perform-edit conn)}))))))
+     (h :ul.todo-list
+        (for [{:keys [db/id complete description editing]} todos]
+          (h :li {:class (str (if complete "completed") " "
+                              (if editing "editing"))}
+             (h :div.view
+                (h :input.toggle
+                   {:type    "checkbox"
+                    :checked complete
+                    :onclick (c/toggle-complete conn id)})
+                (h :label
+                   {:ondblclick (c/start-edit conn id)}
+                   description)
+                (h :button.destroy
+                   {:onclick (c/destroy conn id)}))
+             (h :input.edit
+                {:value   description
+                 :onblur  (c/stop-edit conn)
+                 :onkeyup (c/perform-edit conn)}))))))
 
 (s/defn-memo footer [conn page incomplete-count show-clear?]
   (println "footer")
-  (s/footer {:class "footer"}
-            (s/span {:class "todo-count"}
-                    (s/strong {} incomplete-count) " "
-                    (pluralise "item" incomplete-count)
-                    " left")
+  (h :footer.footer
+     (h :span.todo-count
+        (h :strong {} incomplete-count) " "
+        (pluralise "item" incomplete-count)
+        " left")
 
-            (s/ul {:class "filters"}
-                  (s/li {}
-                        (s/a {:href "#/"
-                              :class (if (= page :all) "selected")}
-                             "All"))
-                  (s/li {}
-                        (s/a {:href "#/active"
-                              :class (if (= page :active) "selected")}
-                             "Active"))
-                  (s/li {}
-                        (s/a {:href "#/completed"
-                              :class (if (= page :completed) "selected")}
-                             "Completed")))
+     (h :ul.filters
+        (h :li {}
+           (h :a {:href "#/"
+                  :class (if (= page :all) "selected")}
+              "All"))
+        (h :li {}
+           (h :a {:href "#/active"
+                  :class (if (= page :active) "selected")}
+              "Active"))
+        (h :li {}
+           (h :a {:href "#/completed"
+                  :class (if (= page :completed) "selected")}
+              "Completed")))
 
-            (if show-clear?
-              (s/button {:class   "clear-completed"
-                         :onclick (c/clear-completed conn)}
-                        "Clear completed"))))
+     (if show-clear?
+       (h :button.clear-completed
+          {:onclick (c/clear-completed conn)}
+          "Clear completed"))))
 
 (defn render [conn]
   (println "----------------------------------- render -------------------------------------")
   (let [db                      @conn
         {:keys [new-todo page]} (m/app-data db)
         todos                   (m/todos db page)]
-    (s/div {}
-           (header conn new-todo)
-           (if (seq todos)
-             (main conn todos (m/all-complete? db)))
-           (if (m/any-todos? db)
-             (footer conn
-                     page
-                     (m/incomplete-count db)
-                     (m/any-complete? db))))))
+    (h :div {}
+       (header conn new-todo)
+       (if (seq todos)
+         (main conn todos (m/all-complete? db)))
+       (if (m/any-todos? db)
+         (footer conn
+                 page
+                 (m/incomplete-count db)
+                 (m/any-complete? db))))))

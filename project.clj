@@ -8,12 +8,8 @@
                  [org.clojure/clojurescript "1.9.229"]
                  [org.clojure/core.async "0.2.391"
                   :exclusions [org.clojure/tools.reader]]
-                 [cljsjs/virtual-dom "2.1.1-0"]
                  [datascript "0.15.5"]
                  [alandipert/storage-atom "1.2.4"]
-                 [venantius/accountant "0.1.7"]
-                 [com.domkm/silk "0.1.2"]
-                 [secretary "1.2.3"]
                  [bidi "2.0.16"]]
 
   :plugins [[lein-figwheel "0.5.8"]
