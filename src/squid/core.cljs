@@ -1,12 +1,9 @@
 (ns squid.core)
 
-(defprotocol Render
-  (render [app]))
+(defrecord App [vdom state renderer])
 
-(defrecord App [vdom state renderer]
-  Render
-  (render [app]
-    (.redraw @vdom)))
+(defn render [{:keys [vdom]}]
+  (.redraw @vdom))
 
 (defn mount [mount-point state renderer]
   (let [view (js/domvm.createView (fn [] #(renderer state)))
