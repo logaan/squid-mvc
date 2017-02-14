@@ -35,6 +35,7 @@
                 :source-paths ["src"]
                 :compiler {:output-to "resources/public/js/compiled/squid_mvc.js"
                            :main squid-mvc.core
+                           :externs ["domvm-externs.js"]
                            :optimizations :advanced
                            :pretty-print false}}]}
 
