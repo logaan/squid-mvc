@@ -75,7 +75,7 @@
           "Clear completed"))))
 
 (defn render [conn]
-  (println "----------------------------------- render -------------------------------------")
+  (println "---------------------------- render ------------------------------")
   (let [db                      @conn
         {:keys [new-todo page]} (m/app-data db)
         todos                   (m/todos db page)]
