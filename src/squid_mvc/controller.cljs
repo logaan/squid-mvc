@@ -5,15 +5,16 @@
             [clojure.string :as str]))
 
 (defn- create [conn]
-  (let [new-todo (str/trim (:new-todo (m/app-data @conn)))]
-    (if (empty? new-todo)
-      (d/transact! conn [{:db/ident :app
-                          :new-todo ""}])
-      (d/transact! conn [{:type        :todo
-                          :description new-todo
-                          :complete    false}
-                         {:db/ident :app
-                          :new-todo ""}]))))
+  (let [new-todo (str/trim (:new-todo (m/app-data @conn)))
+        actions  (if (empty? new-todo)
+                   [{:db/ident :app
+                     :new-todo ""}]
+                   [{:type        :todo
+                     :description new-todo
+                     :complete    false}
+                    {:db/ident :app
+                     :new-todo ""}])]
+    (d/transact! conn actions)))
 
 (defn- commit-edit [conn]
   (let [id [:editing true]]
