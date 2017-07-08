@@ -127,13 +127,3 @@ A todo item has three possible interactions:
       accordingly. E.g. if the filter is `Active` and the item is checked, it
       should be hidden.
 - [x] Make sure the active filter is persisted on reload.
-
-## Remaining work
-
-- [ ] Split framework code into it's own project.
-- [ ] Unify html5 and hashcode routing.
-- [ ] Work out how to handle external components like charts and maps.
-- [ ] Document Squid.
-- [ ] Add test suite.
-- [ ] Setup CI.
-- [ ] Publish to Clojars.
