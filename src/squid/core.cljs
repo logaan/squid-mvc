@@ -1,5 +1,8 @@
 (ns squid.core)
 
+(defn- diff [vm state]
+  #js [state])
+
 (defrecord App [vdom state renderer])
 
 (defn render [{:keys [vdom]}]

@@ -7,22 +7,24 @@
 (defn pluralise [word number]
   (str word (if (not= 1 number) "s")))
 
-(s/defn-memo header [conn new-todo]
+(defn header [conn new-todo]
   (println "header")
   (h :header.header
      (h :h1 "todos")
      (h :input.new-todo
-        {:placeholder "What needs to be done?"
+        {:name        "new-todo"
+         :placeholder "What needs to be done?"
          :autofocus   true
          :onkeyup     (c/edit-new conn)
          :value       new-todo})))
 
-(s/defn-memo main [conn todos all-complete?]
+(defn main [conn todos all-complete?]
   (println "main")
   (h :section.main
 
      (h :input.toggle-all
-        {:type     "checkbox"
+        {:name     "toggle-all"
+         :type     "checkbox"
          :checked  all-complete?
          :onchange (c/toggle-all conn)})
      (h :label {:for "toggle-all"}
@@ -34,20 +36,24 @@
                               (if editing "editing"))}
              (h :div.view
                 (h :input.toggle
-                   {:type    "checkbox"
+                   {:name    [id "complete"]
+                    :type    "checkbox"
                     :checked complete
                     :onclick (c/toggle-complete conn id)})
                 (h :label
-                   {:ondblclick (c/start-edit conn id)}
+                   {:name       [id "label"]
+                    :ondblclick (c/start-edit conn id)}
                    description)
                 (h :button.destroy
-                   {:onclick (c/destroy conn id)}))
+                   {:_key    [id "destroy"]
+                    :onclick (c/destroy conn id)}))
              (h :input.edit
-                {:value   description
+                {:name    [id "description"]
+                 :value   description
                  :onblur  (c/stop-edit conn)
                  :onkeyup (c/perform-edit conn)}))))))
 
-(s/defn-memo footer [conn page incomplete-count show-clear?]
+(defn footer [conn page incomplete-count show-clear?]
   (println "footer")
   (h :footer.footer
      (h :span.todo-count

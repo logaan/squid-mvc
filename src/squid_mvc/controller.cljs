@@ -31,25 +31,25 @@
       (d/transact! conn [[:db/add id :description original-description]
                          [:db/retract id :editing true]]))))
 
-(defn edit-new [conn]
+(s/defm edit-new [conn]
   (fn [event]
     (if (= js/event.code "Enter")
       (create conn)
       (d/transact! conn [{:db/ident :app
                           :new-todo event.target.value}]))))
 
-(defn start-edit [conn id]
+(s/defm start-edit [conn id]
   (fn [event]
     (let [{:keys [description]} (d/entity @conn id)]
       (d/transact! conn [[:db/add id :original-description description]
                          [:db/add id :editing true]])
       (.focus js/event.target.parentElement.nextElementSibling))))
 
-(defn stop-edit [conn]
+(s/defm stop-edit [conn]
   (fn [event]
     (commit-edit conn)))
 
-(defn perform-edit [conn]
+(s/defm perform-edit [conn]
   (fn [event]
     (condp = js/event.code
       "Enter"  (commit-edit conn)
@@ -57,21 +57,21 @@
       (d/transact! conn [[:db/add [:editing true]
                           :description event.target.value]]))))
 
-(defn toggle-complete [conn id]
+(s/defm toggle-complete [conn id]
   (fn [_]
     (let [{:keys [complete]} (d/entity @conn id)]
       (d/transact! conn [[:db/add id :complete (not complete)]]))))
 
-(defn destroy [conn id]
+(s/defm destroy [conn id]
   (fn [_] (d/transact! conn [[:db.fn/retractEntity id]])))
 
-(defn clear-completed [conn]
+(s/defm clear-completed [conn]
   (fn [_]
     (let [ids         (map :db/id (m/find-by-complete @conn true))
           retractions (for [id ids] [:db.fn/retractEntity id])]
       (d/transact! conn retractions))))
 
-(defn toggle-all [conn]
+(s/defm toggle-all [conn]
   (fn [_]
     (let [new-compete (m/any-incomplete? @conn)
           ids         (map :db/id (m/todos @conn :all))

@@ -1,4 +1,4 @@
 (ns squid.core)
 
-(defmacro defn-memo [name & body]
+(defmacro defm [name & body]
   `(def ~name (memoize (fn ~body))))
