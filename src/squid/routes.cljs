@@ -1,5 +1,5 @@
 (ns squid.routes
-  (:require [bidi.bidi :refer [match-route path-for]]
+  (:require [bidi.bidi :as bidi]
             [clojure.string :as str]))
 
 ; --- Helpers ---
@@ -24,7 +24,7 @@
 
 (defn handle-path [routes path]
   (let [{:keys [patterns actions]} (transform-routes routes)
-        match                      (match-route patterns path)]
+        match                      (bidi/match-route patterns path)]
     (if-let [action (actions (:handler match))]
       (action (assoc match :routes patterns)))))
 
@@ -46,7 +46,7 @@
 ;; Only for use with :history routing
 (defn navigate! [routes name & arguments]
   (let [{:keys [patterns actions]} (transform-routes routes)
-        path                       (path-for patterns name arguments)]
+        path                       (bidi/path-for patterns name arguments)]
     (js/console.log "path: " path)
     (.pushState js/window.history nil, nil, path)
     (handle-current :history routes)))
